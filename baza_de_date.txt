@@ -1,0 +1,43 @@
+CREATE SCHEMA `pweb` ;
+
+CREATE TABLE `pweb`.`user` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `telephone` VARCHAR(100) NOT NULL,
+  `address` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  UNIQUE INDEX `password_UNIQUE` (`password` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
+  UNIQUE INDEX `telephone_UNIQUE` (`telephone` ASC) VISIBLE);
+
+CREATE TABLE `pweb`.`offer` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `category` VARCHAR(100) NOT NULL,
+  `userId` INT NOT NULL,
+  `title` VARCHAR(100) NOT NULL,
+  `details` VARCHAR(200) NOT NULL,
+  `provided` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  INDEX `fk_offer_user_idx` (`userId` ASC) VISIBLE,
+  CONSTRAINT `fk_offer_user`
+    FOREIGN KEY (`userId`)
+    REFERENCES `pweb`.`user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+ALTER TABLE `pweb`.`offer` 
+DROP FOREIGN KEY `fk_offer_user`;
+ALTER TABLE `pweb`.`offer` 
+CHANGE COLUMN `userId` `user_id` INT NOT NULL ;
+ALTER TABLE `pweb`.`offer` 
+ADD CONSTRAINT `fk_offer_user`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `pweb`.`user` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
