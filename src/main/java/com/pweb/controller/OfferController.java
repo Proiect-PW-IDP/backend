@@ -33,4 +33,14 @@ public class OfferController {
     public ResponseEntity deleteOffer(@RequestParam(name = "offerId") int offerId) {
         return ResponseEntity.status(HttpStatus.OK).body(offerService.delete(offerId));
     }
+
+    @GetMapping("/provided")
+    public ResponseEntity findAllProvided() {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllProvided());
+    }
+
+    @GetMapping("/required")
+    public ResponseEntity findAllRequired() {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllRequired());
+    }
 }

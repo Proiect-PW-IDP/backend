@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
@@ -28,5 +29,19 @@ public class OfferService {
         Offer offer = getById(offerId);
         offerRepository.delete(offer);
         return offer;
+    }
+
+    public List<Offer> findAllProvided() {
+        return offerRepository.findAll()
+                .stream()
+                .filter(offer -> offer.getProvided())
+                .collect(Collectors.toList());
+    }
+
+    public List<Offer> findAllRequired() {
+        return offerRepository.findAll()
+                .stream()
+                .filter(offer -> !offer.getProvided())
+                .collect(Collectors.toList());
     }
 }
