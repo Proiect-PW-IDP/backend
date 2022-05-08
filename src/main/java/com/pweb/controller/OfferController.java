@@ -39,8 +39,18 @@ public class OfferController {
         return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllProvided());
     }
 
+    @GetMapping("/provided/category")
+    public ResponseEntity findAllProvidedByCategoryName(@RequestParam(name = "categoryName") String categoryName) {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllProvidedByCategoryName(categoryName));
+    }
+
     @GetMapping("/required")
     public ResponseEntity findAllRequired() {
         return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllRequired());
+    }
+
+    @GetMapping("/required/category")
+    public ResponseEntity findAllRequiredByCategoryName(@RequestParam(name = "categoryName") String categoryName) {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllRequiredByCategoryName(categoryName));
     }
 }

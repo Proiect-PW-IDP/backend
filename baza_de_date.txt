@@ -41,3 +41,20 @@ ADD CONSTRAINT `fk_offer_user`
   REFERENCES `pweb`.`user` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
+
+CREATE TABLE `pweb`.`category` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE);
+
+ALTER TABLE `pweb`.`offer` 
+ADD INDEX `fk_offer_category_idx` (`category` ASC) VISIBLE;
+;
+ALTER TABLE `pweb`.`offer` 
+ADD CONSTRAINT `fk_offer_category`
+  FOREIGN KEY (`category`)
+  REFERENCES `pweb`.`category` (`name`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;

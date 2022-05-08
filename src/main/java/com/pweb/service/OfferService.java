@@ -38,10 +38,24 @@ public class OfferService {
                 .collect(Collectors.toList());
     }
 
+    public List<Offer> findAllProvidedByCategoryName(String categoryName) {
+        return offerRepository.findAll()
+                .stream()
+                .filter(offer -> offer.getProvided() && offer.getCategory().equals(categoryName))
+                .collect(Collectors.toList());
+    }
+
     public List<Offer> findAllRequired() {
         return offerRepository.findAll()
                 .stream()
                 .filter(offer -> !offer.getProvided())
+                .collect(Collectors.toList());
+    }
+
+    public List<Offer> findAllRequiredByCategoryName(String categoryName) {
+        return offerRepository.findAll()
+                .stream()
+                .filter(offer -> !offer.getProvided() && offer.getCategory().equals(categoryName))
                 .collect(Collectors.toList());
     }
 }
