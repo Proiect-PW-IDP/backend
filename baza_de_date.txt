@@ -58,3 +58,6 @@ ADD CONSTRAINT `fk_offer_category`
   REFERENCES `pweb`.`category` (`name`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
+
+ALTER TABLE `pweb`.`category` 
+ADD COLUMN `description` VARCHAR(45) NOT NULL AFTER `name`;

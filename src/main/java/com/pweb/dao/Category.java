@@ -13,4 +13,6 @@ public class Category {
     int id;
     @Column(name="name")
     String name;
+    @Column(name="description")
+    String description;
 }
