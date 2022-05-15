@@ -3,26 +3,31 @@ package com.pweb.service;
 import com.pweb.dao.Offer;
 import com.pweb.repository.OfferRepository;
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
-    @Autowired
-    OfferRepository offerRepository;
+    private OfferRepository offerRepository;
 
-    private Counter offerCounter = null;
+    private List<Offer> offerCounter = null;
+    private Counter offerRequestsCounter = null;
 
-    public OfferService(CompositeMeterRegistry meterRegistry) {
-        offerCounter = meterRegistry.counter("offers");
+    public OfferService(OfferRepository offerRepository, CompositeMeterRegistry meterRegistry) {
+        this.offerRepository = offerRepository;
+        offerRequestsCounter = meterRegistry.counter("offer_requests");
+        offerCounter = meterRegistry.gaugeCollectionSize("offers", Tags.empty(), this.offerRepository.findAll());
     }
 
     public List<Offer> findAll() {
-        offerCounter.increment();
+        offerRequestsCounter.increment();
         return offerRepository.findAll();
     }
 
@@ -31,12 +36,14 @@ public class OfferService {
     }
 
     public Offer save(Offer offer) {
+        offerCounter.add(offer);
         return offerRepository.save(offer);
     }
 
     public Offer delete(int offerId) {
         Offer offer = getById(offerId);
         offerRepository.delete(offer);
+        offerCounter.remove(offer);
         return offer;
     }
 
