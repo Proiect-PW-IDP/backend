@@ -2,6 +2,7 @@ package com.pweb.controller;
 
 import com.pweb.dao.Offer;
 import com.pweb.service.OfferService;
+import com.pweb.utils.Constants;
 import com.pweb.utils.Metrics;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class OfferController {
     @Autowired
     OfferService offerService;
-
 
     @GetMapping("/all")
     @Timed("offers.api")
