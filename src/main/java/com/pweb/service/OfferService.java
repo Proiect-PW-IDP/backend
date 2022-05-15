@@ -2,6 +2,8 @@ package com.pweb.service;
 
 import com.pweb.dao.Offer;
 import com.pweb.repository.OfferRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,14 @@ public class OfferService {
     @Autowired
     OfferRepository offerRepository;
 
+    private Counter offerCounter = null;
+
+    public OfferService(CompositeMeterRegistry meterRegistry) {
+        offerCounter = meterRegistry.counter("offers");
+    }
+
     public List<Offer> findAll() {
+        offerCounter.increment();
         return offerRepository.findAll();
     }
 

@@ -3,7 +3,10 @@ package com.pweb.controller;
 import com.pweb.dao.Offer;
 import com.pweb.service.OfferService;
 import com.pweb.utils.Metrics;
-import io.prometheus.client.Counter;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+//import io.prometheus.client.Counter;
 import io.prometheus.client.Histogram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,21 +16,25 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping("/offer")
+@Timed
 public class OfferController {
     @Autowired
     OfferService offerService;
 
 
     @GetMapping("/all")
+    @Timed("offers.api")
     public ResponseEntity findAll() {
-       Metrics.COUNTER.inc();
-        Histogram.Timer requestTimer = Metrics.COMMAND_LATENCY.startTimer();
-        try {
+
+//        Metrics.offerCounter.increment();
+//       Metrics.COUNTER.inc();
+//        Histogram.Timer requestTimer = Metrics.COMMAND_LATENCY.startTimer();
+//        try {
             return ResponseEntity.status(HttpStatus.OK).body(offerService.findAll());
-        } finally {
+     /*   } finally {
             // Stop the histogram timer
             requestTimer.observeDuration();
-        }
+        }*/
     }
 
     @GetMapping
