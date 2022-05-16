@@ -58,4 +58,11 @@ public class OfferService {
                 .filter(offer -> !offer.getProvided() && offer.getCategory().equals(categoryName))
                 .collect(Collectors.toList());
     }
+
+    public List<Offer> findAllOffersByUserId(int userId) {
+        return offerRepository.findAll()
+                .stream()
+                .filter(offer -> offer.getUserId() == userId)
+                .collect(Collectors.toList());
+    }
 }

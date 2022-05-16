@@ -53,4 +53,9 @@ public class OfferController {
     public ResponseEntity findAllRequiredByCategoryName(@RequestParam(name = "categoryName") String categoryName) {
         return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllRequiredByCategoryName(categoryName));
     }
+
+    @GetMapping("/all/myOffers")
+    public ResponseEntity findAllByUserId(@RequestParam(name = "userId") int userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllOffersByUserId(userId));
+    }
 }
