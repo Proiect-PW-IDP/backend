@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(audience);
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuer);
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer);
+        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
 
         jwtDecoder.setJwtValidator(withAudience);
 
@@ -37,9 +37,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.cors().and().authorizeRequests()
-                .mvcMatchers("/auth0/public").permitAll()
-                .mvcMatchers("/auth0/private").authenticated()
+        http
+                .cors().and()
+                .csrf().disable()
+                .httpBasic()
+                .and().authorizeRequests()
+                .antMatchers("/offer**").permitAll()
+                .antMatchers("/category**").permitAll()
+                .antMatchers("/user**").permitAll()
+                .antMatchers("/auth0/public").permitAll()
+                .antMatchers("/auth0/private").authenticated()
                 .and()
                 .oauth2ResourceServer().jwt();
         // @formatter:on
