@@ -61,3 +61,18 @@ ADD CONSTRAINT `fk_offer_category`
 
 ALTER TABLE `pweb`.`category` 
 ADD COLUMN `description` VARCHAR(45) NOT NULL AFTER `name`;
+
+ALTER TABLE `pweb`.`offer` 
+ADD COLUMN `image` VARCHAR(255) NOT NULL AFTER `provided`;
+
+ALTER TABLE `pweb`.`user` 
+DROP COLUMN `name`,
+DROP COLUMN `password`,
+DROP COLUMN `username`,
+CHANGE COLUMN `telephone` `telephone` VARCHAR(100) NULL ,
+CHANGE COLUMN `address` `address` VARCHAR(100) NULL ,
+DROP INDEX `telephone_UNIQUE` ,
+DROP INDEX `password_UNIQUE` ,
+DROP INDEX `username_UNIQUE` ;
+;
+

@@ -2,6 +2,7 @@ package com.pweb.service;
 
 import com.pweb.dao.Offer;
 import com.pweb.repository.OfferRepository;
+import com.pweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ public class OfferService {
     @Autowired
     OfferRepository offerRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     public List<Offer> findAll() {
         return offerRepository.findAll();
     }
@@ -22,6 +26,11 @@ public class OfferService {
     }
 
     public Offer save(Offer offer) {
+        return offerRepository.save(offer);
+    }
+
+    public Offer saveByUserEmail(Offer offer, String email) {
+        offer.setUserId(userRepository.findByEmail(email).get().getId());
         return offerRepository.save(offer);
     }
 
@@ -38,10 +47,11 @@ public class OfferService {
                 .collect(Collectors.toList());
     }
 
-    public List<Offer> findAllProvidedByCategoryName(String categoryName) {
+    public List<Offer> findAllProvidedByCategoryName(String categoryName, String userEmail) {
         return offerRepository.findAll()
                 .stream()
-                .filter(offer -> offer.getProvided() && offer.getCategory().equals(categoryName))
+                .filter(offer -> offer.getProvided() && offer.getCategory().equals(categoryName) &&
+                        offer.getUserId() != userRepository.findByEmail(userEmail).get().getId())
                 .collect(Collectors.toList());
     }
 
@@ -52,17 +62,18 @@ public class OfferService {
                 .collect(Collectors.toList());
     }
 
-    public List<Offer> findAllRequiredByCategoryName(String categoryName) {
+    public List<Offer> findAllRequiredByCategoryName(String categoryName, String userEmail) {
         return offerRepository.findAll()
                 .stream()
-                .filter(offer -> !offer.getProvided() && offer.getCategory().equals(categoryName))
+                .filter(offer -> !offer.getProvided() && offer.getCategory().equals(categoryName) &&
+                        offer.getUserId() != userRepository.findByEmail(userEmail).get().getId())
                 .collect(Collectors.toList());
     }
 
-    public List<Offer> findAllOffersByUserId(int userId) {
+    public List<Offer> findAllOffersByUserEmail(String userEmail) {
         return offerRepository.findAll()
                 .stream()
-                .filter(offer -> offer.getUserId() == userId)
+                .filter(offer -> offer.getUserId() == userRepository.findByEmail(userEmail).get().getId())
                 .collect(Collectors.toList());
     }
 }
