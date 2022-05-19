@@ -47,6 +47,11 @@ public class OfferController {
         return ResponseEntity.status(HttpStatus.CREATED).body(offerService.save(offer));
     }
 
+    @PostMapping("/email")
+    public ResponseEntity createOfferByUserEmail(@RequestBody Offer offer, @RequestParam(name = "userEmail") String userEmail) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(offerService.saveByUserEmail(offer, userEmail));
+    }
+
     @DeleteMapping
     public ResponseEntity deleteOffer(@RequestParam(name = "offerId") int offerId) {
         return ResponseEntity.status(HttpStatus.OK).body(offerService.delete(offerId));
@@ -58,8 +63,9 @@ public class OfferController {
     }
 
     @GetMapping("/provided/category")
-    public ResponseEntity findAllProvidedByCategoryName(@RequestParam(name = "categoryName") String categoryName) {
-        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllProvidedByCategoryName(categoryName));
+    public ResponseEntity findAllProvidedByCategoryName(@RequestParam(name = "categoryName") String categoryName,
+                                                        @RequestParam(name = "userEmail") String userEmail) {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllProvidedByCategoryName(categoryName, userEmail));
     }
 
     @GetMapping("/required")
@@ -68,7 +74,13 @@ public class OfferController {
     }
 
     @GetMapping("/required/category")
-    public ResponseEntity findAllRequiredByCategoryName(@RequestParam(name = "categoryName") String categoryName) {
-        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllRequiredByCategoryName(categoryName));
+    public ResponseEntity findAllRequiredByCategoryName(@RequestParam(name = "categoryName") String categoryName,
+                                                        @RequestParam(name = "userEmail") String userEmail) {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllRequiredByCategoryName(categoryName, userEmail));
+    }
+
+    @GetMapping("/all/myOffers")
+    public ResponseEntity findAllByUserId(@RequestParam(name = "userEmail") String userEmail) {
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllOffersByUserEmail(userEmail));
     }
 }

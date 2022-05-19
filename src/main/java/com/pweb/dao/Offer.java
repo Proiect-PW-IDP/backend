@@ -21,4 +21,6 @@ public class Offer {
     String details;
     @Column(name="provided")
     Boolean provided;
+    @Column(name="image")
+    String image;
 }

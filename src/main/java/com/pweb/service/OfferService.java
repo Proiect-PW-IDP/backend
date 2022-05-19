@@ -3,6 +3,7 @@ package com.pweb.service;
 import com.pweb.config.RabbitMQConfiguration;
 import com.pweb.dao.Offer;
 import com.pweb.repository.OfferRepository;
+import com.pweb.repository.UserRepository;
 import com.pweb.utils.Receiver;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
@@ -41,6 +42,9 @@ public class OfferService implements CommandLineRunner {
         offerCounter = meterRegistry.gaugeCollectionSize("offers", Tags.empty(), this.offerRepository.findAll());
     }
 
+    @Autowired
+    UserRepository userRepository;
+
     public List<Offer> findAll() {
         offerRequestsCounter.increment();
         return offerRepository.findAll();
@@ -52,6 +56,11 @@ public class OfferService implements CommandLineRunner {
 
     public Offer save(Offer offer) {
         offerCounter.add(offer);
+        return offerRepository.save(offer);
+    }
+
+    public Offer saveByUserEmail(Offer offer, String email) {
+        offer.setUserId(userRepository.findByEmail(email).get().getId());
         return offerRepository.save(offer);
     }
 
@@ -69,10 +78,11 @@ public class OfferService implements CommandLineRunner {
                 .collect(Collectors.toList());
     }
 
-    public List<Offer> findAllProvidedByCategoryName(String categoryName) {
+    public List<Offer> findAllProvidedByCategoryName(String categoryName, String userEmail) {
         return offerRepository.findAll()
                 .stream()
-                .filter(offer -> offer.getProvided() && offer.getCategory().equals(categoryName))
+                .filter(offer -> offer.getProvided() && offer.getCategory().equals(categoryName) &&
+                        offer.getUserId() != userRepository.findByEmail(userEmail).get().getId())
                 .collect(Collectors.toList());
     }
 
@@ -83,10 +93,18 @@ public class OfferService implements CommandLineRunner {
                 .collect(Collectors.toList());
     }
 
-    public List<Offer> findAllRequiredByCategoryName(String categoryName) {
+    public List<Offer> findAllRequiredByCategoryName(String categoryName, String userEmail) {
         return offerRepository.findAll()
                 .stream()
-                .filter(offer -> !offer.getProvided() && offer.getCategory().equals(categoryName))
+                .filter(offer -> !offer.getProvided() && offer.getCategory().equals(categoryName) &&
+                        offer.getUserId() != userRepository.findByEmail(userEmail).get().getId())
+                .collect(Collectors.toList());
+    }
+
+    public List<Offer> findAllOffersByUserEmail(String userEmail) {
+        return offerRepository.findAll()
+                .stream()
+                .filter(offer -> offer.getUserId() == userRepository.findByEmail(userEmail).get().getId())
                 .collect(Collectors.toList());
     }
 

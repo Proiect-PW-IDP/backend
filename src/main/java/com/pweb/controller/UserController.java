@@ -30,6 +30,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getById(userId));
     }
 
+    @GetMapping("/email")
+    public ResponseEntity getByEmail(@RequestParam(name = "email") String email) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getByEmail(email));
+    }
+
     @PostMapping
     public ResponseEntity createUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
@@ -38,19 +43,5 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity deleteUser(@RequestParam(name = "userId") int userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.delete(userId));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginForm loginForm, HttpServletResponse response) {
-        User user = userService.login(loginForm.getUsername(), loginForm.getPassword());
-        if (user == null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not exist");
-        else {
-            Cookie cookieUserId = new Cookie("userId", Integer.toString(user.getId()));
-            response.addCookie(cookieUserId);
-            Cookie cookieUsername = new Cookie("userId", user.getUsername());
-            response.addCookie(cookieUsername);
-            return ResponseEntity.status(HttpStatus.OK).body(user);
-        }
     }
 }

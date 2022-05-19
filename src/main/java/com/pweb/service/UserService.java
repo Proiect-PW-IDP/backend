@@ -20,17 +20,21 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email).get();
+    }
+
     public User save(User user){
-        return userRepository.save(user);
+        if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
+            return userRepository.save(user);
+        }
+
+        return user;
     }
 
     public User delete(int userId){
         User user = getById(userId);
         userRepository.delete(user);
         return user;
-    }
-
-    public User login(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
     }
 }
