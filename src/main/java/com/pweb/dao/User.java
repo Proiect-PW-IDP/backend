@@ -14,8 +14,4 @@ public class User {
     int id;
     @Column(name="email")
     String email;
-    @Column(name="telephone")
-    String telephone;
-    @Column(name="address")
-    String address;
 }

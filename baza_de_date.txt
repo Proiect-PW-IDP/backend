@@ -76,3 +76,13 @@ DROP INDEX `password_UNIQUE` ,
 DROP INDEX `username_UNIQUE` ;
 ;
 
+ALTER TABLE `pweb`.`user` 
+DROP COLUMN `username`,
+DROP COLUMN `password`,
+DROP COLUMN `name`,
+DROP COLUMN `address`,
+DROP COLUMN `telephone`;
+
+ALTER TABLE `pweb`.`offer` 
+ADD COLUMN `telephone` VARCHAR(20) NOT NULL AFTER `image`,
+ADD COLUMN `address` VARCHAR(100) NOT NULL AFTER `telephone`;

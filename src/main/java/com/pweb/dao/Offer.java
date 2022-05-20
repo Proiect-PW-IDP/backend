@@ -19,6 +19,10 @@ public class Offer {
     String title;
     @Column(name="details")
     String details;
+    @Column(name="telephone")
+    String telephone;
+    @Column(name="address")
+    String address;
     @Column(name="provided")
     Boolean provided;
     @Column(name="image")
