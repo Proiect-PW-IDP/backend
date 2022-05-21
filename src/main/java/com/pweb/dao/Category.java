@@ -15,4 +15,6 @@ public class Category {
     String name;
     @Column(name="description")
     String description;
+    @Column(name="image")
+    String image;
 }
