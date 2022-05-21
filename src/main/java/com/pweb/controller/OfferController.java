@@ -1,6 +1,7 @@
 package com.pweb.controller;
 
 import com.pweb.dao.Offer;
+import com.pweb.dto.InterestDTO;
 import com.pweb.dto.ResponseDTO;
 import com.pweb.service.OfferService;
 import com.pweb.service.RabbitMqSender;
@@ -24,8 +25,6 @@ public class OfferController {
     @Autowired
     OfferService offerService;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
 
     @GetMapping("/all")
     @Timed("offers.api")
@@ -75,8 +74,8 @@ public class OfferController {
     }
 
     @GetMapping("/provided/category/sender")
-    public ResponseEntity findAllProvidedByCategoryName() {
-        rabbitMqSender.send("berge bai");
+    public ResponseEntity findAllProvidedByCategoryName(@RequestBody InterestDTO interestDTO) {
+        offerService.createAndSendInterestMessage(interestDTO);
         return ResponseEntity.status(HttpStatus.OK).body("message sent!");
     }
 

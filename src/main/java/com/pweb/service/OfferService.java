@@ -1,6 +1,7 @@
 package com.pweb.service;
 
 import com.pweb.dao.Offer;
+import com.pweb.dto.InterestDTO;
 import com.pweb.repository.OfferRepository;
 import com.pweb.repository.UserRepository;
 import io.micrometer.core.instrument.Counter;
@@ -17,6 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class OfferService /*implements CommandLineRunner*/ {
     private OfferRepository offerRepository;
+
+
+    @Autowired
+    private RabbitMqSender rabbitMqSender;
 
     Logger logger = LoggerFactory.getLogger(OfferService.class);
 
@@ -98,6 +103,15 @@ public class OfferService /*implements CommandLineRunner*/ {
                 .stream()
                 .filter(offer -> offer.getUserId() == userRepository.findByEmail(userEmail).get().getId())
                 .collect(Collectors.toList());
+    }
+
+    public InterestDTO createAndSendInterestMessage(InterestDTO interestDTO) {
+        rabbitMqSender.send(interestDTO);
+//        rabbitMqSender.sentInterestDTO(interestDTO);
+        logger.info("message sent ");
+        logger.info(interestDTO.toString());
+
+        return interestDTO;
     }
 
    /* @Override
