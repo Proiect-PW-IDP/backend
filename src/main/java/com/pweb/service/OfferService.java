@@ -1,8 +1,14 @@
 package com.pweb.service;
 
 import com.pweb.dao.Offer;
+import com.pweb.dto.InterestDTO;
 import com.pweb.repository.OfferRepository;
 import com.pweb.repository.UserRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +16,34 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class OfferService {
+public class OfferService /*implements CommandLineRunner*/ {
+    private OfferRepository offerRepository;
+
+
     @Autowired
-    OfferRepository offerRepository;
+    private RabbitMqSender rabbitMqSender;
+
+    Logger logger = LoggerFactory.getLogger(OfferService.class);
+
+    private List<Offer> offerCounter = null;
+    private Counter offerRequestsCounter = null;
+
+//    private final RabbitTemplate rabbitTemplate;
+//    private final Receiver receiver;
+
+    public OfferService(OfferRepository offerRepository, CompositeMeterRegistry meterRegistry/*, RabbitTemplate rabbitTemplate, Receiver receiver*/) {
+//        this.rabbitTemplate = rabbitTemplate;
+//        this.receiver = receiver;
+        this.offerRepository = offerRepository;
+        offerRequestsCounter = meterRegistry.counter("offer_requests");
+        offerCounter = meterRegistry.gaugeCollectionSize("offers", Tags.empty(), this.offerRepository.findAll());
+    }
 
     @Autowired
     UserRepository userRepository;
 
     public List<Offer> findAll() {
+        offerRequestsCounter.increment();
         return offerRepository.findAll();
     }
 
@@ -26,6 +52,7 @@ public class OfferService {
     }
 
     public Offer save(Offer offer) {
+        offerCounter.add(offer);
         return offerRepository.save(offer);
     }
 
@@ -37,6 +64,7 @@ public class OfferService {
     public Offer delete(int offerId) {
         Offer offer = getById(offerId);
         offerRepository.delete(offer);
+        offerCounter.remove(offer);
         return offer;
     }
 
@@ -76,4 +104,20 @@ public class OfferService {
                 .filter(offer -> offer.getUserId() == userRepository.findByEmail(userEmail).get().getId())
                 .collect(Collectors.toList());
     }
+
+    public InterestDTO createAndSendInterestMessage(InterestDTO interestDTO) {
+        rabbitMqSender.send(interestDTO);
+//        rabbitMqSender.sentInterestDTO(interestDTO);
+        logger.info("message sent ");
+        logger.info(interestDTO.toString());
+
+        return interestDTO;
+    }
+
+   /* @Override
+    public void run(String... args) throws Exception {
+        logger.info("Sending message...");
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE_NAME, "offer.test", "Hello from RabbitMQ!");
+        receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
+    }*/
 }

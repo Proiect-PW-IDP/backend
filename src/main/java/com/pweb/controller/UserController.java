@@ -18,6 +18,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
+
+
     @GetMapping("/all")
     public ResponseEntity findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());

@@ -15,4 +15,11 @@ public class ResponseDTO {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseDTO{" +
+                "message='" + message + '\'' +
+                '}';
+    }
 }
