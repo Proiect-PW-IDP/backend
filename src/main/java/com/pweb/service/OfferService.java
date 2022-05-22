@@ -28,12 +28,7 @@ public class OfferService /*implements CommandLineRunner*/ {
     private List<Offer> offerCounter = null;
     private Counter offerRequestsCounter = null;
 
-//    private final RabbitTemplate rabbitTemplate;
-//    private final Receiver receiver;
-
     public OfferService(OfferRepository offerRepository, CompositeMeterRegistry meterRegistry/*, RabbitTemplate rabbitTemplate, Receiver receiver*/) {
-//        this.rabbitTemplate = rabbitTemplate;
-//        this.receiver = receiver;
         this.offerRepository = offerRepository;
         offerRequestsCounter = meterRegistry.counter("offer_requests");
         offerCounter = meterRegistry.gaugeCollectionSize("offers", Tags.empty(), this.offerRepository.findAll());
@@ -107,17 +102,10 @@ public class OfferService /*implements CommandLineRunner*/ {
 
     public InterestDTO createAndSendInterestMessage(InterestDTO interestDTO) {
         rabbitMqSender.send(interestDTO);
-//        rabbitMqSender.sentInterestDTO(interestDTO);
         logger.info("message sent ");
         logger.info(interestDTO.toString());
 
         return interestDTO;
     }
 
-   /* @Override
-    public void run(String... args) throws Exception {
-        logger.info("Sending message...");
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE_NAME, "offer.test", "Hello from RabbitMQ!");
-        receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
-    }*/
 }

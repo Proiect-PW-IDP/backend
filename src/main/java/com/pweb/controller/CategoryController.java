@@ -1,16 +1,11 @@
 package com.pweb.controller;
 
 import com.pweb.dao.Category;
-import com.pweb.dao.User;
-import com.pweb.dto.LoginForm;
 import com.pweb.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 @CrossOrigin
 @RestController
