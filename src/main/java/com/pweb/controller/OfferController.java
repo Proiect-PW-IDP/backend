@@ -73,7 +73,7 @@ public class OfferController {
         return ResponseEntity.status(HttpStatus.OK).body(offerService.findAllProvidedByCategoryName(categoryName, userEmail));
     }
 
-    @GetMapping("/provided/category/sender")
+    @PostMapping("/provided/category/sender")
     public ResponseEntity findAllProvidedByCategoryName(@RequestBody InterestDTO interestDTO) {
         offerService.createAndSendInterestMessage(interestDTO);
         return ResponseEntity.status(HttpStatus.OK).body("message sent!");
