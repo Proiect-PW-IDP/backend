@@ -89,3 +89,22 @@ ADD COLUMN `address` VARCHAR(100) NOT NULL AFTER `telephone`;
 
 ALTER TABLE `pweb`.`category` 
 ADD COLUMN `image` VARCHAR(255) NOT NULL AFTER `description`;
+
+CREATE TABLE `pweb`.`interest` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `offer_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  INDEX `fk_user_interest_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_offer_interest_idx` (`offer_id` ASC) VISIBLE,
+  CONSTRAINT `fk_user_interest`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `pweb`.`user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_offer_interest`
+    FOREIGN KEY (`offer_id`)
+    REFERENCES `pweb`.`offer` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
